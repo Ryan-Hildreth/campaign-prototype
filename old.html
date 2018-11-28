@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="fontawesome/css/fontawesome-all.min.css">
+<script src="jquery/jquery-1.12.4.js"></script>
+<script src="jquery/jquery-ui.js"></script>
+<style>
+html,body{
+	margin:0;
+	color:#333;
+	font-family:sans-serif;
+	user-select:none;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	font-size:14px;
+}
+
+.page-section-title{
+    font-size: 16px;
+    text-transform: uppercase;
+    width: 100%;
+    margin:8px;
+}
+.bordered{
+	border:1px solid #DDD;
+	border-radius:4px;
+	overflow:hidden;
+}
+.search-box {
+	display:inline-block;
+	width:100%;
+}
+input[type=text]:active{
+    border: 1px solid #5f5b5b;
+}
+input[type=text]{
+    border: 1px solid #DDD;
+    height: 28px;
+    text-indent: 5px;
+	box-sizing:border-box;
+	border-radius:4px;
+}
+
+.search-box input[type=text] {
+	width:calc(100% - 51px);
+	border-top-right-radius:0;
+    border-bottom-right-radius:0;
+	vertical-align:top;
+}
+.search-box button{
+	transition:background-color 200ms linear;
+	border:1px solid #DDD;
+	background-color:#5f5b5b;
+	color:#FFF;
+    height: 28px;
+	margin:0;
+	padding:0;
+	width:50px;
+	border-top-right-radius:4px;
+	border-bottom-right-radius:4px;
+    border-left: 0;
+	vertical-align:top;
+	cursor: pointer;
+}
+.search-box button:hover{
+	background-color:#929090;
+}
+.search-box button:active{
+	background-color:#AAA;
+}
+select[multiple]{
+	border:0;
+	padding:5px;
+}
+.select-box{
+	border-top:1px solid #DDD;
+	overflow-x:auto;
+}
+.pull-right{
+	float:right;
+}
+.pull-left{
+	float:left;
+}
+.btn-dropdown-icon{
+    margin-right: 5px;
+	padding-left: 10px;
+	color: #3265d7;
+}
+input:focus{
+	border-color:#5f5b5b!important;
+}
+input:focus, button:focus, select:focus{
+	outline:1px dotted #FFF;
+	outline-offset:-3px;
+}
+input[type=checkbox]:disabled,
+input[type=radio]:disabled{
+	cursor:not-allowed;
+}
+input[type=checkbox]+label,
+input[type=radio]+label{
+	font-size: 14px;
+    color: #333;
+}
+input[type=checkbox]:disabled+label,
+input[type=radio]:disabled+label{
+    color: #777;
+	cursor:not-allowed;
+}
+.help-block {
+	position:absolute;
+    display: block;
+    margin-bottom: 10px;
+    color: #737373;
+	font-size: 14px;
+	margin-top:5px;
+}
+a{
+	color:#3265d7;
+	text-decoration: none;
+	cursor:pointer;
+	font-size: 14px;
+}
+a:hover{
+	text-decoration: underline;
+}
+* {
+	box-sizing:border-box;
+}
+.content-box{
+	background-color:#FFF;
+	border:1px solid #DDD;
+	box-sizing:border-box;
+	overflow-y:auto;
+	overflow-x:hidden;
+	padding:15px;
+	font-family:sans-serif;
+	margin-top: 0;
+	list-style:none;
+	min-height:50px;
+	position:relative;
+	max-height:100%;
+	padding-top:0;
+	border-top:0;
+	width:100%;
+}
+li .content-box{
+	padding:8px;
+}
+.header-bar{
+	height:34px;
+	border-bottom:1px solid #DDD;
+	line-height:30px;
+	padding:0 8px;
+	background-color:#EEE;
+}
+.drag-container{
+    height: 30px !important;
+    line-height: 30px !important;
+    color: #000;
+    border: 1px solid #ddd;
+	width:auto!important;
+    font-weight: normal;
+    padding: 0 10px;
+    background-color: #EEE;
+	white-space:nowrap;
+	border-radius:4px;
+	z-index:1000000;
+	cursor:move;
+}
+.content-item{
+	font-size:14px;
+	padding:3px;
+	cursor:move;
+}
+.content-item:hover{
+	background-color:#EEE;
+}
+.content-item.selected{
+	background-color:#DDD;
+	outline:0;
+}
+.toolbar-icon {
+	color:#3265d7;
+	font-size:14px;
+	line-height:34px;
+	float:right;
+	cursor:pointer;
+	padding:0 6px 0 6px;
+	text-indent:0;
+	position:relative;
+}
+.popup-backdrop{
+	display:none;
+	background-color:rgba(0,0,0,0.5);
+	position:absolute;
+	top:0;
+	height:638px;
+	left:0;
+	width:1024px;
+	cursor:default;
+	z-index: 1000;
+}
+.popup{
+	position:absolute;
+	width:850px;
+	top:60px;
+	left:50%;
+	transform:translateX(-50%);
+	border:1px solid #555;
+    border-radius:6px;
+	overflow:hidden;
+	background-color:#FFF;
+}
+.popup>.content{
+     margin-bottom: 0;
+	 max-height: 400px;
+	 overflow: auto;
+	 padding:15px;
+	 width:100%;
+}
+.popup>.footer{
+	text-align:right;
+	padding:15px;
+}
+.btn{
+	display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 12px;
+    font-size: 12px;
+    line-height: 1.42857;
+    border-radius: 4px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    height: 30px;
+    padding: 5px 10px;
+    transition: 0.5s ease;
+	min-width: 75px;
+}
+.btn-default{
+	background-color: transparent!important;
+    border-color: #3265d7!important;
+    color: #3265d7 !important;
+}
+.btn-primary{
+	background-color: #3265d7!important;
+    border-color: #3265d7!important;
+    color: #FFF !important;
+}
+.btn-link{
+	background-color: transparent!important;
+    border-color: transparent!important;
+    color: #3265d7 !important;
+}
+.select-list{
+	border:1px solid #DDD;
+	border-radius:6px;
+	margin-bottom:15px;
+	padding:0;
+	overflow:hidden;
+}
+.select-list li{
+	cursor:pointer;
+	width:100%;
+	text-indent:20px;
+	height:40px;
+	line-height:40px;
+    font-size: 12px;
+    color: #333;
+    background-color: #fff;
+	list-style:none;
+}
+.select-list li.selected{
+	color: #fff;
+    background-color: #5f5b5b;
+    border: 0;
+}
+
+#background-image{
+	cursor:not-allowed;
+	outline:3px solid #5e5a5a;
+}
+
+table{
+	width: 100%;
+	border-spacing: 0;
+	border-radius:3px;
+}
+table td,
+table th{
+	padding:10px;
+}
+.table-header>th{
+	border-right: 1px solid #DDD;
+	border-bottom: 2px solid #000;
+	background-color: #FFF!important;
+	font-size: 12px;
+	font-weight:700;
+	text-align:left;
+}
+.table-header>th:last-of-type{
+	border-right: 0;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+
+}
+table tr:not(:last-of-type) td {
+    border-top: 1px solid #CFCFCF;
+    border-bottom: 1px solid #CFCFCF;
+}
+table tbody tr:nth-of-type(odd) {
+    background-color: #f9f9f9;
+}
+
+.doc-list{
+	padding: 0;
+    margin: 0;
+	border-radius:3px;
+	clear: both;
+}
+.doc-list tr{
+	padding:10px;
+	cursor: move;
+}
+table tr:hover td{
+	background-color:#EDEDEB!important;
+}
+.drag-container a{
+	color: #000!important;
+	text-decoration: none!important;
+}
+
+.view-mode .doc-list li{
+	cursor: pointer;
+}
+.view-mode #edit-buttons,
+.view-mode #selected-document-table-title {
+	display: none;
+}
+.view-mode #status-column{
+	display: table-cell!important;
+}
+
+.view-mode .doc-list tr{
+	cursor: pointer!important;
+}
+
+.check{
+	width: 26px;
+}
+.done{
+	color:#0A0;
+}
+
+.ui-sortable-placeholder{
+	visibility: visible!important;
+	opacity: 0;
+}
+
+#selected-document-list:empty:after{
+	content: "No Items Selected.";
+	position: absolute;
+    top: 47px;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: #555;
+}
+
+#view-campaign{
+	position: absolute;
+    top: 42px;
+    left: 20px;
+    font-size: 12px;
+    color: #FFF;
+    background-color: #5e5a5a;
+	display: none;
+}
+
+.selected-item[disabled] {
+    color: #999!important;
+    background-color: #EEE;
+    pointer-events: none;
+}
+.selected-item[disabled] a {
+    color: #999 !important;
+}
+</style>
+</head>
+<body>
+<div><img id="background-image" src="data:image/png;base64,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wzAEgGEYhnG3j5L/Xu5NMAzDEACGYRjGz2X2Hx/eCsMwDAFgGIZh/Fxm/xrAMAxDABiGYRiGYRiGIQAMwzAMwzAMwxAAhmEYhmEYhmGMsgD4fwAAwM+GAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAAASAtwAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAgADwFgAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAEAAAAIAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAACAAAAEAAAAIAAAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAABAAAACAAAAEAAAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAABAAAACAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAAAgAAABAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAAAQAAAAgAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAAABAAAACAAAAEAAAACAAAAAAAQAAAAgAAAAAAEAAAAIAAAAQAAAAAACAAAAEAAAAIAAAAAABAAAACAAAABAAAAAAAIAAAAQAAAAgAAAAAAEAAAAIAAAAIDb4v8DRmwUfahq808AAAAASUVORK5CYII="></img></div>
+<div id="view-campaign">View Campaign</div>
+
+<div id="document-content" style="position:absolute;top:70px;width:1024px;height:564px;background:#FFF;cursor:default;overflow:auto;padding:15px;">
+	<div id="help-text" style="margin-bottom:10px;"></div>
+	<div class="bordered" style="min-height: 75px; position: relative;">
+		<table id="selected-document-table" style="z-index: 1; position: relative;">
+			<thead>
+				 <tr class="table-header" id="selected-document-table-header">
+						<!-- <th>Order</th> -->
+						<th>Type</th>
+						<th id="status-column" style="display:none;">Status</th>
+						<th style="width:100%;">Title</th>
+				 </tr>
+			</thead>
+			<tbody id="selected-document-list" class="doc-list"></tbody>
+		</table>
+	</div>
+	<!-- <ol class="doc-list" ></ol> -->
+	<div style="text-align:right; margin-top: 10px;" id="edit-buttons">
+		<button class="btn btn-link" id="add-btn" onclick="$('#add-popup').show();"><i class="fa fa-plus-circle"></i> Add Another</button>
+		<button class="btn btn-default" id="cancel-btn" onclick="window.location.href = window.location.href">Cancel</button>
+		<button class="btn btn-primary" id="save-btn" onclick="">Save</button>
+	</div>
+</div>
+
+<div class="popup-backdrop" id="add-popup">
+	<div class="popup" style="width:300px;">
+		<div class="header-bar">
+			<span style="margin-top: 2px;display: inline-block; font-size:16px;">Add</span>
+			<span onclick="$('#add-popup').hide();" class="fa fa-times toolbar-icon" style="color:#333;" title="Close"></span>
+		</div>
+		<div class="content-box">
+			<ul class="select-list">
+				<li onclick="showAddDocPopup(0)">Document</li>
+				<li onclick="showAddDocPopup(1)">Questionnaire</li>
+				<li onclick="showAddDocPopup(2)">Training</li>
+			</ul>
+			<div align="right" style="margin-top: 10px;">
+			<input type="button" value="Cancel" onclick="$('#add-popup').hide();" id="DocumentsCloseButton" class="btn btn-default">
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="popup-backdrop" id="documents-popup">
+	<div class="popup">
+		<div class="header-bar">
+			<span id="documents-popup-title" style="margin-top: 2px;display: inline-block; font-size:16px;">Documents</span>
+			<span onclick="$('#documents-popup').hide();" class="fa fa-times toolbar-icon" style="color:#333;" title="Close"></span>
+		</div>
+		<div class="content">
+			<div class="search-box" style="margin-bottom:15px;">
+				<input id="document-search-input" type="text" placeholder="Search" onkeypress="inputSetSearch(event)"><button type="button" onclick="setSearch()"><i class="fa fa-search"></i></button>
+			</div>
+			
+			<div style="border:1px solid #CFCFCF">
+				<table style="width: 100%;" id="document-table">
+					<thead>
+						 <tr class="table-header" id="document-table-header">
+							<th>Type</th>
+							<th style="width:100%;">Title</th>
+						 </tr>
+					 </thead>
+					 <tbody id="document-table-body"></tbody>
+				</table>
+			</div>
+		</div>
+		<div class="footer">
+			<input type="button" value="Cancel" onclick="$('#documents-popup').hide();" id="DocumentsCloseButton" class="btn btn-default">
+		</div>
+	</div>
+</div>
+
+<div class="popup-backdrop" id="alert-popup">
+	<div class="popup" style="width:500px;">
+		<div class="header-bar">
+			<span style="margin-top: 2px;display: inline-block; font-size:16px;">Alert</span>
+			<span onclick="$('#alert-popup').hide();" class="fa fa-times toolbar-icon" style="color:#333;" title="Close"></span>
+		</div>
+		<div class="content" id="alert-popup-content">
+		
+		</div>
+		<div class="footer">
+			<input type="button" value="OK" onclick="$('#alert-popup').hide();" class="btn btn-primary">
+		</div>
+	</div>
+</div>
+
+<div class="popup-backdrop" id="confirm-popup">
+	<div class="popup" style="width:500px;">
+		<div class="header-bar">
+			<span style="margin-top: 2px;display: inline-block; font-size:16px;">Confirm</span>
+			<span onclick="$('#confirm-popup').hide();" class="fa fa-times toolbar-icon" style="color:#333;" title="Close"></span>
+		</div>
+		<div class="content" id="confirm-popup-content">
+			
+		</div>
+		<div class="footer">
+			<input type="button" value="Cancel" onclick="$('#confirm-popup').hide();" id="DocumentsCloseButton" class="btn btn-default">
+			<input type="button" value="OK" onclick="confirmCallback(); $('#confirm-popup').hide();" class="btn btn-primary">
+		</div>
+	</div>
+</div>
+
+<div class="popup-backdrop" id="add-another-popup">
+	<div class="popup" style="width:500px;">
+		<div class="header-bar">
+			<span style="margin-top: 2px;display: inline-block; font-size:16px;">Confirm</span>
+			<span onclick="$('#add-another-popup').hide();" class="fa fa-times toolbar-icon" style="color:#333;" title="Close"></span>
+		</div>
+		<div class="content">
+			<strong>Added Successfully</strong>.<br><br>Would you like to add another?
+		</div>
+		<div class="footer">
+			<input type="button" value="Done" onclick="$('#documents-popup').hide();$('#add-another-popup').hide();" class="btn btn-default">
+			<input type="button" value="Add Another" onclick="$('#add-another-popup').hide();" class="btn btn-primary">
+		</div>
+	</div>
+</div>
+
+<script>
+	var viewMode = window.location.hash == '#view';
+	if (viewMode){
+		document.body.classList.add('view-mode');
+	}
+	
+	var dataType=[
+		'Documents',
+		'Questionnaires',
+		'Training'
+	];
+	var docIcon=[
+		'fa fa-file-code',
+		'fa fa-file-word',
+		'fa fa-file-excel',
+		'fa fa-list-ol',
+		'fa fa-file-video',
+	];
+	var data = [
+		/* Document */[
+			{icon:0, title:'Test Document 1'},
+			{icon:1, title:'Test Document 2'},
+			{icon:2, title:'Test Document 3'},
+			{icon:0, title:'Test Document 4'},
+			{icon:1, title:'Test Document 5'},
+			{icon:2, title:'Test Document 6'},
+			{icon:0, title:'Test Document 7'},
+			{icon:1, title:'Test Document 8'},
+			{icon:2, title:'Test Document 9'},
+			{icon:1, title:'Test Document 10'},
+			{icon:1, title:'Test Document 11'},
+		],
+		/* Questionnaire */[
+			{icon:3, title:'Test Questionnaire'}
+		],
+		/* Training */[
+			{icon:4, title:'Test Training'}
+		]
+	];
+	
+	var selectedItems=[];
+	
+	var selectedDocType;
+	function buildDocTable(filterString){
+		$('#document-table tr:not(.table-header)').remove();
+		var items = data[selectedDocType];
+		for (var itemIndex in items){
+			let item = items[itemIndex];
+			if (!filterString || item.title.indexOf(filterString)>=0){
+				$('#document-table-body').append(
+					$('<tr style="cursor:pointer;">')
+						.html('<td style="text-align:center;"><i class="'+docIcon[item.icon]+'"></i></td><td><a href="javascript:void(0);">'+item.title+'</a></td>')
+						.on('click', function(){
+							addItem(item.icon, item.title);
+						})
+				);
+			}
+		}
+	}
+	function alertHTML(text){
+		$('#alert-popup-content').text(text);
+		$('#alert-popup').show();
+	}
+	var confirmCallback = null;
+	function confirmHTML(text, callback){
+		$('#confirm-popup-content').text(text);
+		confirmCallback = callback;
+		$('#confirm-popup').show();
+	}
+	
+	function showAddDocPopup(type){
+		$('#add-popup').hide();
+		$('#documents-popup-title').text(dataType[type]);
+		selectedDocType = type;
+		buildDocTable(null);
+		$('#document-search-input').val('');
+		$('#documents-popup').show();
+	}
+	
+	var nextItemID = 0;
+	function addItem(icon, title){
+		var item = {icon, title};
+		if (selectedItems.indexOf(item.title)>=0){
+			alertHTML("That content has already been added. Please select another item or click 'Cancel'.");
+			return;
+		}
+		selectedItems.push(item.title);
+		var itemID = nextItemID++;
+		$('#selected-document-list').append(
+			$('<tr class="selected-item" id="selected-item-'+itemID+'">')
+				.html(
+					viewMode
+						? /* View Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></td><td style="text-align: center;">'+((itemID < 3) ? '<i class="fa fa-check-circle check done"></i>' : '<i class="fa fa-circle check"></i>')+'</td><td></i> <a href="javascript:void(0);">'+item.title+'</a></td>'
+						: /* Edit Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></i></td><td><span class="list-item-content"><a href="javascript:docLinkClicked();">'+item.title+'</a></span> <a class="pull-right" class="btn-link" onclick="removeItem(event, '+ itemID +')"><i class="fa fa-trash-alt"></i></a></td>'
+				)
+				.on('click', function(){
+					if (viewMode){
+						docLinkClicked();
+					}
+				})
+		);
+		if (viewMode && itemID > 3){
+			$('#selected-item-'+itemID).attr('disabled', 'disabled');
+		}
+		if ($('#documents-popup').is(':visible')){
+			$('#add-another-popup').show();
+		}
+	}
+	
+	function docLinkClicked(){
+		alertHTML('Clicking this link will open the associated content in a new window. This does not work on the prototype.');
+	}
+	
+	function removeItem(event, id){
+		confirmHTML("Are you sure you want to remove this content?", function(){
+			var item = $('#selected-item-'+id);
+			var index = selectedItems.indexOf(item.text().trim());
+			if (index >= 0){
+				selectedItems.splice(index, 1);
+			}
+			item.remove();
+		});
+		if (event){
+			event.stopPropagation();
+		}
+	}
+	
+	function setSearch(){
+		buildDocTable($('#document-search-input').val());
+	}
+	function inputSetSearch(event){
+		if (event.keyCode == 13){
+			setSearch();
+		}
+	}
+	function clearSearch(){
+		$('#document-search-input').val('');
+		setSearch();
+	}
+</script>
+
+<script>
+if (viewMode){
+	addItem(1, 'Test Document 1');
+	addItem(1, 'Test Document 2');
+	addItem(1, 'Test Document 3');
+	addItem(1, 'Test Document 4');
+	addItem(1, 'Test Document 5');
+	addItem(1, 'Test Document 6');
+	addItem(1, 'Test Document 7');
+	addItem(1, 'Test Document 8');
+	$('#view-campaign').show();
+	$('#help-text').text('You are required to read/complete each of the following items.');
+} else {
+	window.addEventListener('load', function(){
+		$('#selected-document-list').sortable({
+			scroll: true,
+			cursor: 'move',
+			containment: document.body,
+			helper: function(event, ui) {
+				return $('<span class="drag-container">' + ui.find('.list-item-content').html() + '</span>');
+			},
+			cursorAt: {top: 15, left: 50},
+			appendTo: '#document-content',
+			distance: 10
+		});
+	});
+	$('#help-text').text('');
+}
+</script>
+</body>
+</html>
