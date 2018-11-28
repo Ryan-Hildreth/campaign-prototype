@@ -25,7 +25,6 @@ html,body{
 .bordered{
 	border:1px solid #DDD;
 	border-radius:4px;
-	overflow:hidden;
 }
 .search-box {
 	display:inline-block;
@@ -415,6 +414,11 @@ table tr:hover td{
 .selected-item[disabled] a {
     color: #999 !important;
 }
+
+.active-item {
+    outline: 1px solid #1ab394;
+    background-color: #F1F9E9!important;
+}
 </style>
 </head>
 <body>
@@ -536,7 +540,7 @@ table tr:hover td{
 		</div>
 		<div class="content">
 			<div style="margin-bottom:8px;"><strong>Section Name:</strong></div>
-			<textarea id="rename-section-popup-text" style="width:100%;resize:none;height:50px;"></textarea>
+			<input type="text" id="rename-section-popup-text" style="width:100%;"></input>
 		</div>
 		<div class="footer">
 			<input type="button" value="Cancel" onclick="$('#rename-section-popup').hide();" class="btn btn-default">
@@ -553,7 +557,7 @@ table tr:hover td{
 		</div>
 		<div class="content">
 			<div style="margin-bottom:8px;"><strong>Section Name:</strong></div>
-			<textarea id="add-section-popup-text" style="width:100%;resize:none;height:50px;"></textarea>
+			<input type="text" id="add-section-popup-text" style="width:100%;"></input>
 		</div>
 		<div class="footer">
 			<input type="button" value="Cancel" onclick="$('#add-section-popup').hide();" class="btn btn-default">
@@ -579,26 +583,30 @@ table tr:hover td{
 		'fa fa-file-excel',
 		'fa fa-list-ol',
 		'fa fa-file-video',
+		'fa fa-file-pdf',
 	];
 	var data = [
 		/* Document */[
-			{icon:0, title:'Test Document 1'},
-			{icon:1, title:'Test Document 2'},
-			{icon:2, title:'Test Document 3'},
-			{icon:0, title:'Test Document 4'},
-			{icon:1, title:'Test Document 5'},
-			{icon:2, title:'Test Document 6'},
-			{icon:0, title:'Test Document 7'},
-			{icon:1, title:'Test Document 8'},
-			{icon:2, title:'Test Document 9'},
-			{icon:1, title:'Test Document 10'},
-			{icon:1, title:'Test Document 11'},
+			{icon:0, title:'Code of Conduct'},
+			{icon:1, title:'Company Policies'},
+			{icon:1, title:'Employee Responsibilities'},
+			{icon:5, title:'Expense Form'},
+			{icon:1, title:'Healthcare Benefits'},
+			{icon:0, title:'Helpful Links & Contact Information'},
+			{icon:2, title:'Holiday Schedule'},
+			{icon:1, title:'Incident Reporting'},
+			{icon:1, title:'Laws & Regulations'},
+			{icon:1, title:'Workplace Best Practices'},
+			{icon:5, title:'Workplace Safety'},
 		],
 		/* Questionnaire */[
-			{icon:3, title:'Test Questionnaire'}
+			{icon:3, title:'Policy Acknowledgement Questionnaire'},
+			{icon:3, title:'Employee Survey'},
 		],
 		/* Training */[
-			{icon:4, title:'Test Training'}
+			{icon:4, title:'New Employee Orientation'},
+			{icon:4, title:'Policy Training Video'},
+			{icon:4, title:'Workplace Safety'},
 		]
 	];
 	
@@ -609,7 +617,7 @@ table tr:hover td{
 		var items = data[selectedDocType];
 		for (var itemIndex in items){
 			let item = items[itemIndex];
-			if (!filterString || item.title.indexOf(filterString)>=0){
+			if (!filterString || item.title.toLowerCase().indexOf(filterString)>=0){
 				$('#document-table-body').append(
 					$('<tr style="cursor:pointer;">')
 						.html('<td style="text-align:center;"><i class="'+docIcon[item.icon]+'"></i></td><td><a href="javascript:void(0);">'+item.title+'</a></td>')
@@ -642,7 +650,7 @@ table tr:hover td{
 	
 	var nextItemID = 0;
 	function addItem(icon, title){
-		var item = {icon, title};
+		var item = {icon: icon, title: title};
 		if (selectedItems.indexOf(item.title)>=0){
 			alertHTML("That content has already been added. Please select another item or click 'Cancel'.");
 			return;
@@ -653,7 +661,7 @@ table tr:hover td{
 			$('<tr id="selected-item-'+itemID+'" class="selected-item">')
 				.html(
 					viewMode
-						? /* View Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></td><td style="text-align: center;">'+((itemID < 3) ? '<i class="fa fa-check-circle check done"></i>' : '<i class="fa fa-circle check"></i>')+'</td><td></i> <a href="javascript:void(0);">'+item.title+'</a></td>'
+						? /* View Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></td><td style="text-align: center;">'+((itemID < 2) ? '<i class="fa fa-check-circle check done"></i>' : '<i class="fa fa-circle check"></i>')+'</td><td></i> <a href="javascript:void(0);">'+item.title+'</a></td>'
 						: /* Edit Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></i></td><td><span class="list-item-content"><a href="javascript:docLinkClicked();">'+item.title+'</a></span> <a class="pull-right" class="btn-link" onclick="removeItem(event, '+ itemID +')"><i class="fa fa-trash-alt"></i></a></td>'
 				)
 				.on('click', function(){
@@ -662,8 +670,12 @@ table tr:hover td{
 					}
 				})
 		);
-		if (viewMode && itemID > 3){
-			$('#selected-item-'+itemID).attr('disabled', 'disabled');
+		if (viewMode){
+			if (itemID == 2){
+				$('#selected-item-'+itemID).addClass('active-item');
+			} else if (itemID > 2){
+				$('#selected-item-'+itemID).attr('disabled', 'disabled');
+			}
 		}
 		if ($('#documents-popup').is(':visible')){
 			$('#add-another-popup').show();
@@ -689,7 +701,7 @@ table tr:hover td{
 	}
 	
 	function setSearch(){
-		buildDocTable($('#document-search-input').val());
+		buildDocTable($('#document-search-input').val().toLowerCase());
 	}
 	function inputSetSearch(event){
 		if (event.keyCode == 13){
@@ -723,7 +735,7 @@ table tr:hover td{
 		var section = $('<div id="section-'+index+'" class="bordered section">');
 		if (viewMode){
 			section.html(
-			'<div class="header-bar"><strong>Section '+index+':</strong> <span id="section-name-'+index+'" class="section-name"></span></div>\
+			'<div class="header-bar section-header" style="display:none;"><strong>Section '+index+':</strong> <span id="section-name-'+index+'" class="section-name"></span></div>\
 			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
 					 <tr class="table-header" id="selected-document-table-header-'+index+'" class="selected-document-table-header">\
@@ -764,28 +776,36 @@ table tr:hover td{
 				appendTo: '#document-content',
 				distance: 10
 			});
+		} else {
+			if (index > 1){
+				$('.section-header').show();
+			}
 		}
 	}
 </script>
 
 <script>
-if (viewMode){
-	addSection('Default');
-	addItem(1, 'Test Document 1');
-	addItem(1, 'Test Document 2');
-	addItem(1, 'Test Document 3');
-	addItem(1, 'Test Document 4');
-	addItem(1, 'Test Document 5');
-	addSection('Test');
-	addItem(1, 'Test Document 6');
-	addItem(1, 'Test Document 7');
-	addItem(1, 'Test Document 8');
-	$('#view-campaign').show();
-	$('#help-text').text('You are required to read/complete each of the following items.');
-} else {
-	$('#help-text').text('');
-	addSection('Default');
-}
+$(document).ready(function(){
+	if (viewMode){
+		addSection('Policies & Training');
+		addItem(1, 'Laws & Regulations');
+		addItem(1, 'Company Policies');
+		addItem(4, 'Policy Training Video');
+		addItem(0, 'Code of Conduct');
+		addSection('General Compliance');
+		addItem(1, 'Employee Responsibilities');
+		addSection('Attestation');
+		addItem(3, 'Policy Acknowledgement Questionnaire');
+		addItem(3, 'Employee Survey');
+		addSection('Additional Information');
+		addItem(0, 'Helpful Links & Contact Information');
+		$('#view-campaign').show();
+		$('#help-text').text('You are required to read/complete each of the following items.');
+	} else {
+		$('#help-text').text('');
+		addSection('Default');
+	}
+})
 </script>
 </body>
 </html>
