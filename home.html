@@ -310,15 +310,11 @@ table th{
 	padding:10px;
 }
 .table-header>th{
-	border-right: 1px solid #DDD;
 	border-bottom: 2px solid #000;
 	background-color: #FFF!important;
 	font-size: 12px;
 	font-weight:700;
 	text-align:left;
-}
-.table-header>th:last-of-type{
-	border-right: 0;
 }
 
 table {
@@ -430,8 +426,8 @@ table tr:hover td{
 	<div id="section-area"></div>
 
 	<!-- <ol class="doc-list" ></ol> -->
-	<div style="text-align:right; margin-top: 10px;" id="edit-buttons">
-		<button class="btn btn-link" id="add-btn" onclick="showNewSectionPopup()"><i class="fa fa-plus-circle"></i> Add Section</button>
+	<div style="text-align:right; margin-top: 10px; display: none;" id="edit-buttons">
+		<button class="btn btn-link" id="add-btn" onclick="showNewSectionPopup()"><i class="fa fa-plus-square"></i> New Section (Optional)</button>
 		<button class="btn btn-default" id="cancel-btn" onclick="window.location.href = window.location.href">Cancel</button>
 		<button class="btn btn-primary" id="save-btn" onclick="">Save</button>
 	</div>
@@ -629,7 +625,7 @@ table tr:hover td{
 		}
 	}
 	function alertHTML(text){
-		$('#alert-popup-content').text(text);
+		$('#alert-popup-content').html(text);
 		$('#alert-popup').show();
 	}
 	var confirmCallback = null;
@@ -652,7 +648,7 @@ table tr:hover td{
 	function addItem(icon, title){
 		var item = {icon: icon, title: title};
 		if (selectedItems.indexOf(item.title)>=0){
-			alertHTML("That content has already been added. Please select another item or click 'Cancel'.");
+			alertHTML("That content has already been added to this campaign.<br/><br/>Please select another item or click <strong>Cancel</strong>.");
 			return;
 		}
 		selectedItems.push(item.title);
@@ -662,7 +658,7 @@ table tr:hover td{
 				.html(
 					viewMode
 						? /* View Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></td><td style="text-align: center;">'+((itemID < 2) ? '<i class="fa fa-check-circle check done"></i>' : '<i class="fa fa-circle check"></i>')+'</td><td></i> <a href="javascript:void(0);">'+item.title+'</a></td>'
-						: /* Edit Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></i></td><td><span class="list-item-content"><a href="javascript:docLinkClicked();">'+item.title+'</a></span> <a class="pull-right" class="btn-link" onclick="removeItem(event, '+ itemID +')"><i class="fa fa-trash-alt"></i></a></td>'
+						: /* Edit Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></i></td><td><span class="list-item-content"><a href="javascript:docLinkClicked();">'+item.title+'</a></span></td><td><a class="btn-link" onclick="removeItem(event, '+ itemID +')"><i class="fa fa-trash-alt"></i></a></td>'
 				)
 				.on('click', function(){
 					if (viewMode){
@@ -755,6 +751,7 @@ table tr:hover td{
 					 <tr class="table-header" id="selected-document-table-header-'+index+'" class="selected-document-table-header">\
 							<th>Type</th>\
 							<th style="width:100%;">Title</th>\
+							<th></th>\
 					 </tr>\
 				</thead>\
 				<tbody id="selected-document-list-'+index+'" class="doc-list"></tbody>\
@@ -803,6 +800,7 @@ $(document).ready(function(){
 		$('#help-text').text('You are required to read/complete each of the following items.');
 	} else {
 		$('#help-text').text('');
+		$('#edit-buttons').show();
 		addSection('Default');
 	}
 })
