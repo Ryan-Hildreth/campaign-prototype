@@ -398,8 +398,12 @@ table tr:hover td{
 .section {
 	min-height: 108px;
 	position: relative;
-	margin-bottom: 10px;
+	margin-bottom: 15px;
 	background-color: #FFF;
+}
+
+.section:last-of-type{
+	margin-bottom:0;
 }
 
 .selected-item[disabled] {
@@ -426,7 +430,7 @@ table tr:hover td{
 	<div id="section-area"></div>
 
 	<!-- <ol class="doc-list" ></ol> -->
-	<div style="text-align:right; margin-top: 10px; display: none;" id="edit-buttons">
+	<div style="text-align:right;margin-top:15px;display:none;" id="edit-buttons">
 		<button class="btn btn-link" id="add-btn" onclick="showNewSectionPopup()"><i class="fa fa-plus-square"></i> New Section (Optional)</button>
 		<button class="btn btn-default" id="cancel-btn" onclick="window.location.href = window.location.href">Cancel</button>
 		<button class="btn btn-primary" id="save-btn" onclick="">Save</button>
@@ -734,7 +738,7 @@ table tr:hover td{
 			'<div class="header-bar section-header" style="display:none;"><strong>Section '+index+':</strong> <span id="section-name-'+index+'" class="section-name"></span></div>\
 			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
-					 <tr class="table-header" id="selected-document-table-header-'+index+'" class="selected-document-table-header">\
+					 <tr class="table-header" id="selected-document-table-header-'+index+'">\
 							<th>Type</th>\
 							<th class="status-column">Status</th>\
 							<th style="width:100%;">Title</th>\
@@ -748,7 +752,7 @@ table tr:hover td{
 			'<div class="header-bar"><strong>Section '+index+':</strong> <a href="javascript:showRenamePopup('+index+')" id="section-name-'+index+'" class="section-name"></a><button class="pull-right btn btn-link" onclick="sectionIndex='+index+';$(\'#add-popup\').show();"><i class="fa fa-plus-square"></i> Add Content</button></div>\
 			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
-					 <tr class="table-header" id="selected-document-table-header-'+index+'" class="selected-document-table-header">\
+					 <tr class="table-header" id="selected-document-table-header-'+index+'">\
 							<th>Type</th>\
 							<th style="width:100%;">Title</th>\
 							<th></th>\
