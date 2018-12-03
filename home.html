@@ -25,6 +25,7 @@ html,body{
 .bordered{
 	border:1px solid #DDD;
 	border-radius:4px;
+	overflow:hidden;
 }
 .search-box {
 	display:inline-block;
@@ -215,7 +216,7 @@ li .content-box{
 	left:50%;
 	transform:translateX(-50%);
 	border:1px solid #555;
-    border-radius:6px;
+    border-radius:4px;
 	overflow:hidden;
 	background-color:#FFF;
 }
@@ -273,7 +274,7 @@ li .content-box{
 }
 .select-list{
 	border:1px solid #DDD;
-	border-radius:6px;
+	border-radius:4px;
 	margin-bottom:15px;
 	padding:0;
 	overflow:hidden;
@@ -303,7 +304,6 @@ li .content-box{
 table{
 	width: 100%;
 	border-spacing: 0;
-	border-radius:3px;
 }
 table td,
 table th{
@@ -333,7 +333,7 @@ table tbody tr:nth-of-type(odd) {
 .doc-list{
 	padding: 0;
     margin: 0;
-	border-radius:3px;
+	border-radius:4px;
 	clear: both;
 }
 .doc-list tr{
@@ -396,10 +396,11 @@ table tr:hover td{
 }
 
 .section {
-    min-height: 108px;
+    min-height: 74px;
 	position: relative;
 	margin-bottom: 15px;
 	background-color: #FFF;
+	overflow: hidden;
 }
 
 .section:last-of-type{
@@ -417,19 +418,8 @@ table tr:hover td{
 
 .active-item {
     outline: 1px solid #1ab394;
+	outline-offset: -1px;
     background-color: #F1F9E9!important;
-}
-
-.simple-edit-mode #add-content-btn{
-	display: inline-block !important;
-}
-
-.simple-edit-mode #add-section-btn{
-	display: none;
-}
-
-.simple-edit-mode .section{
-	min-height: 74px;
 }
 </style>
 </head>
@@ -443,8 +433,7 @@ table tr:hover td{
 
 	<!-- <ol class="doc-list" ></ol> -->
 	<div style="text-align:right;margin-top:15px;display:none;" id="edit-buttons">
-		<button class="btn btn-link" id="add-section-btn" onclick="showNewSectionPopup()"><i class="fa fa-plus-square"></i> New Section (Optional)</button>
-		<button class="btn btn-link" id="add-content-btn" style="display:none;" onclick="$('#add-popup').show()"><i class="fa fa-plus-square"></i> Add Content</button>
+		<button class="btn btn-link" id="add-content-btn" onclick="$('#add-popup').show()"><i class="fa fa-plus-square"></i> Add Content</button>
 		<button class="btn btn-default" id="cancel-btn" onclick="window.location.href = window.location.href">Cancel</button>
 		<button class="btn btn-primary" id="save-btn" onclick="">Save</button>
 	</div>
@@ -480,7 +469,7 @@ table tr:hover td{
 				<input id="document-search-input" type="text" placeholder="Search" onkeypress="inputSetSearch(event)"><button type="button" onclick="setSearch()"><i class="fa fa-search"></i></button>
 			</div>
 			
-			<div style="border:1px solid #CFCFCF">
+			<div class="bordered">
 				<table style="width: 100%;" id="document-table">
 					<thead>
 						 <tr class="table-header" id="document-table-header">
@@ -583,10 +572,6 @@ table tr:hover td{
 	var viewMode = (window.location.hash == '#view') || (window.location.hash == '#view-simple');
 	if (viewMode){
 		document.body.classList.add('view-mode');
-	}
-	var simpleMode = window.location.hash == '#simple';
-	if (simpleMode){
-		document.body.classList.add('simple-edit-mode');
 	}
 	
 	var dataType=[
@@ -752,8 +737,7 @@ table tr:hover td{
 		var section = $('<div id="section-'+index+'" class="bordered section">');
 		if (viewMode){
 			section.html(
-			'<div class="header-bar section-header" style="display:none;"><span id="section-name-'+index+'" class="section-name"></span></div>\
-			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
+			'<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
 					 <tr class="table-header" id="selected-document-table-header-'+index+'">\
 							<th>Type</th>\
@@ -766,8 +750,7 @@ table tr:hover td{
 			);
 		} else {
 			section.html(
-			'<div class="header-bar" style="display:none;"><a href="javascript:showRenamePopup('+index+')" class="section-name"><span id="section-name-'+index+'"></span>  <i class="fa fa-edit"></i></a><button class="pull-right btn btn-link" onclick="sectionIndex='+index+';$(\'#add-popup\').show();"><i class="fa fa-plus-square"></i> Add Content</button></div>\
-			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
+			'<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
 					 <tr class="table-header" id="selected-document-table-header-'+index+'">\
 							<th>Type</th>\
@@ -781,7 +764,6 @@ table tr:hover td{
 		}
 		
 		$('#section-area').append(section);
-		$('#section-name-'+index).text(name);
 		if (!viewMode){
 			$('#selected-document-list-'+index).sortable({
 				scroll: true,
@@ -794,9 +776,6 @@ table tr:hover td{
 				appendTo: '#document-content',
 				distance: 10
 			});
-			if (!simpleMode){
-				$('.section .header-bar').show();
-			}
 		} else {
 			if (index > 1){
 				$('.section-header').show();
@@ -808,23 +787,20 @@ table tr:hover td{
 <script>
 $(document).ready(function(){
 	if (viewMode){
-		var showSections = window.location.hash == '#view';
 		addSection('Policies & Training');
 		addItem(1, 'Laws & Regulations');
 		addItem(1, 'Company Policies');
 		addItem(4, 'Policy Training Video');
 		addItem(0, 'Code of Conduct');
-		if (showSections) addSection('General Compliance');
 		addItem(1, 'Employee Responsibilities');
-		if (showSections) addSection('Attestation');
 		addItem(3, 'Policy Acknowledgement Questionnaire');
 		addItem(3, 'Employee Survey');
-		if (showSections) addSection('Additional Information');
 		addItem(0, 'Helpful Links & Contact Information');
 		$('#view-campaign').show();
 		$('#help-text').text('You are required to read/complete each of the following items.');
 	} else {
-		$('#help-text').text('');
+		$('#help-text').hide();
+		//$('#help-text').text('');
 		$('#edit-buttons').show();
 		addSection('Default');
 	}
