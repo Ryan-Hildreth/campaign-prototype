@@ -580,7 +580,7 @@ table tr:hover td{
 </div>
 
 <script>
-	var viewMode = window.location.hash == '#view';
+	var viewMode = (window.location.hash == '#view') || (window.location.hash == '#view-simple');
 	if (viewMode){
 		document.body.classList.add('view-mode');
 	}
@@ -808,17 +808,18 @@ table tr:hover td{
 <script>
 $(document).ready(function(){
 	if (viewMode){
+		var showSections = window.location.hash == '#view';
 		addSection('Policies & Training');
 		addItem(1, 'Laws & Regulations');
 		addItem(1, 'Company Policies');
 		addItem(4, 'Policy Training Video');
 		addItem(0, 'Code of Conduct');
-		//addSection('General Compliance');
+		if (showSections) addSection('General Compliance');
 		addItem(1, 'Employee Responsibilities');
-		//addSection('Attestation');
+		if (showSections) addSection('Attestation');
 		addItem(3, 'Policy Acknowledgement Questionnaire');
 		addItem(3, 'Employee Survey');
-		//addSection('Additional Information');
+		if (showSections) addSection('Additional Information');
 		addItem(0, 'Helpful Links & Contact Information');
 		$('#view-campaign').show();
 		$('#help-text').text('You are required to read/complete each of the following items.');
