@@ -396,7 +396,7 @@ table tr:hover td{
 }
 
 .section {
-	min-height: 108px;
+    min-height: 108px;
 	position: relative;
 	margin-bottom: 15px;
 	background-color: #FFF;
@@ -419,6 +419,18 @@ table tr:hover td{
     outline: 1px solid #1ab394;
     background-color: #F1F9E9!important;
 }
+
+.simple-edit-mode #add-content-btn{
+	display: inline-block !important;
+}
+
+.simple-edit-mode #add-section-btn{
+	display: none;
+}
+
+.simple-edit-mode .section{
+	min-height: 74px;
+}
 </style>
 </head>
 <body>
@@ -431,7 +443,8 @@ table tr:hover td{
 
 	<!-- <ol class="doc-list" ></ol> -->
 	<div style="text-align:right;margin-top:15px;display:none;" id="edit-buttons">
-		<button class="btn btn-link" id="add-btn" onclick="showNewSectionPopup()"><i class="fa fa-plus-square"></i> New Section (Optional)</button>
+		<button class="btn btn-link" id="add-section-btn" onclick="showNewSectionPopup()"><i class="fa fa-plus-square"></i> New Section (Optional)</button>
+		<button class="btn btn-link" id="add-content-btn" style="display:none;" onclick="$('#add-popup').show()"><i class="fa fa-plus-square"></i> Add Content</button>
 		<button class="btn btn-default" id="cancel-btn" onclick="window.location.href = window.location.href">Cancel</button>
 		<button class="btn btn-primary" id="save-btn" onclick="">Save</button>
 	</div>
@@ -570,6 +583,10 @@ table tr:hover td{
 	var viewMode = window.location.hash == '#view';
 	if (viewMode){
 		document.body.classList.add('view-mode');
+	}
+	var simpleMode = window.location.hash == '#simple';
+	if (simpleMode){
+		document.body.classList.add('simple-edit-mode');
 	}
 	
 	var dataType=[
@@ -735,7 +752,7 @@ table tr:hover td{
 		var section = $('<div id="section-'+index+'" class="bordered section">');
 		if (viewMode){
 			section.html(
-			'<div class="header-bar section-header" style="display:none;"><strong>Section '+index+':</strong> <span id="section-name-'+index+'" class="section-name"></span></div>\
+			'<div class="header-bar section-header" style="display:none;"><span id="section-name-'+index+'" class="section-name"></span></div>\
 			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
 					 <tr class="table-header" id="selected-document-table-header-'+index+'">\
@@ -749,7 +766,7 @@ table tr:hover td{
 			);
 		} else {
 			section.html(
-			'<div class="header-bar"><strong>Section '+index+':</strong> <a href="javascript:showRenamePopup('+index+')" id="section-name-'+index+'" class="section-name"></a><button class="pull-right btn btn-link" onclick="sectionIndex='+index+';$(\'#add-popup\').show();"><i class="fa fa-plus-square"></i> Add Content</button></div>\
+			'<div class="header-bar" style="display:none;"><a href="javascript:showRenamePopup('+index+')" class="section-name"><span id="section-name-'+index+'"></span>  <i class="fa fa-edit"></i></a><button class="pull-right btn btn-link" onclick="sectionIndex='+index+';$(\'#add-popup\').show();"><i class="fa fa-plus-square"></i> Add Content</button></div>\
 			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
 					 <tr class="table-header" id="selected-document-table-header-'+index+'">\
@@ -777,6 +794,9 @@ table tr:hover td{
 				appendTo: '#document-content',
 				distance: 10
 			});
+			if (!simpleMode){
+				$('.section .header-bar').show();
+			}
 		} else {
 			if (index > 1){
 				$('.section-header').show();
@@ -793,12 +813,12 @@ $(document).ready(function(){
 		addItem(1, 'Company Policies');
 		addItem(4, 'Policy Training Video');
 		addItem(0, 'Code of Conduct');
-		addSection('General Compliance');
+		//addSection('General Compliance');
 		addItem(1, 'Employee Responsibilities');
-		addSection('Attestation');
+		//addSection('Attestation');
 		addItem(3, 'Policy Acknowledgement Questionnaire');
 		addItem(3, 'Employee Survey');
-		addSection('Additional Information');
+		//addSection('Additional Information');
 		addItem(0, 'Helpful Links & Contact Information');
 		$('#view-campaign').show();
 		$('#help-text').text('You are required to read/complete each of the following items.');
