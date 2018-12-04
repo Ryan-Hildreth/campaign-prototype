@@ -308,6 +308,7 @@ table{
 table td,
 table th{
 	padding:10px;
+	white-space:nowrap;
 }
 .table-header>th{
 	border-bottom: 2px solid #000;
@@ -475,6 +476,7 @@ table tr:hover td{
 						 <tr class="table-header" id="document-table-header">
 							<th>Type</th>
 							<th style="width:100%;">Title</th>
+							<th>Version</th>
 						 </tr>
 					 </thead>
 					 <tbody id="document-table-body"></tbody>
@@ -589,26 +591,26 @@ table tr:hover td{
 	];
 	var data = [
 		/* Document */[
-			{icon:0, title:'Code of Conduct'},
-			{icon:1, title:'Company Policies'},
-			{icon:1, title:'Employee Responsibilities'},
-			{icon:5, title:'Expense Form'},
-			{icon:1, title:'Healthcare Benefits'},
-			{icon:0, title:'Helpful Links & Contact Information'},
-			{icon:2, title:'Holiday Schedule'},
-			{icon:1, title:'Incident Reporting'},
-			{icon:1, title:'Laws & Regulations'},
-			{icon:1, title:'Workplace Best Practices'},
-			{icon:5, title:'Workplace Safety'},
-		],
-		/* Questionnaire */[
-			{icon:3, title:'Policy Acknowledgement Questionnaire'},
-			{icon:3, title:'Employee Survey'},
-		],
-		/* Training */[
-			{icon:4, title:'New Employee Orientation'},
-			{icon:4, title:'Policy Training Video'},
-			{icon:4, title:'Workplace Safety'},
+			{icon:0, title:'Code of Conduct', version:1},
+			{icon:1, title:'Company Policies', version:3},
+			{icon:1, title:'Employee Responsibilities', version:1},
+			{icon:5, title:'Expense Form', version:2},
+			{icon:1, title:'Healthcare Benefits', version:4},
+			{icon:0, title:'Helpful Links & Contact Information', version:2},
+			{icon:2, title:'Holiday Schedule', version:1},
+			{icon:1, title:'Incident Reporting', version:1},
+			{icon:1, title:'Laws & Regulations', version:2},
+			{icon:1, title:'Workplace Best Practices', version:1},
+			{icon:5, title:'Workplace Safety', version:1},
+		], [
+		/* Questionnaire */
+			{icon:3, title:'Policy Acknowledgement Questionnaire', version:1},
+			{icon:3, title:'Employee Survey', version:2},
+		], [
+		/* Training */
+			{icon:4, title:'New Employee Orientation', version:4},
+			{icon:4, title:'Policy Training Video', version:2},
+			{icon:4, title:'Workplace Safety ', version:1},
 		]
 	];
 	
@@ -622,9 +624,9 @@ table tr:hover td{
 			if (!filterString || item.title.toLowerCase().indexOf(filterString)>=0){
 				$('#document-table-body').append(
 					$('<tr style="cursor:pointer;">')
-						.html('<td style="text-align:center;"><i class="'+docIcon[item.icon]+'"></i></td><td><a href="javascript:void(0);">'+item.title+'</a></td>')
+						.html('<td style="text-align:center;"><i class="'+docIcon[item.icon]+'"></i></td><td><a href="javascript:void(0);">'+item.title+'</a></td><td>'+item.version+'</td>')
 						.on('click', function(){
-							addItem(item.icon, item.title);
+							addItem(item);
 						})
 				);
 			}
@@ -651,8 +653,7 @@ table tr:hover td{
 	}
 	
 	var nextItemID = 0;
-	function addItem(icon, title){
-		var item = {icon: icon, title: title};
+	function addItem(item){
 		if (selectedItems.indexOf(item.title)>=0){
 			alertHTML("That content has already been added to this campaign.<br/><br/>Please select another item or click <strong>Cancel</strong>.");
 			return;
@@ -663,8 +664,16 @@ table tr:hover td{
 			$('<tr id="selected-item-'+itemID+'" class="selected-item">')
 				.html(
 					viewMode
-						? /* View Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></td><td style="text-align: center;">'+((itemID < 2) ? '<i class="fa fa-check-circle check done"></i>' : '<i class="fa fa-circle check"></i>')+'</td><td></i> <a href="javascript:void(0);">'+item.title+'</a></td>'
-						: /* Edit Mode*/ '<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></i></td><td><span class="list-item-content"><a href="javascript:docLinkClicked();">'+item.title+'</a></span></td><td><a class="btn-link" onclick="removeItem(event, '+ itemID +')"><i class="fa fa-trash-alt"></i></a></td>'
+						? /* View Mode*/ '\
+						<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></td>\
+						<td style="text-align: center;">'+((itemID < 2) ? '<i class="fa fa-check-circle check done"></i>' : '<i class="fa fa-circle check"></i>')+'</td>\
+						<td></i> <a href="javascript:void(0);">'+item.title+'</a></td>\
+						<td>'+item.version+'</td>'
+						: /* Edit Mode*/ '\
+						<td style="text-align: center;"><i class="'+docIcon[item.icon]+'"></i></td>\
+						<td><span class="list-item-content"><a href="javascript:docLinkClicked();">'+item.title+'</a></span></td>\
+						<td>'+item.version+'</td>\
+						<td><a class="btn-link" onclick="removeItem(event, '+ itemID +')"><i class="fa fa-trash-alt"></i></a></td>'
 				)
 				.on('click', function(){
 					if (viewMode){
@@ -736,26 +745,28 @@ table tr:hover td{
 		sectionIndex = index;
 		var section = $('<div id="section-'+index+'" class="bordered section">');
 		if (viewMode){
-			section.html(
-			'<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
+			section.html('\
+			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
 					 <tr class="table-header" id="selected-document-table-header-'+index+'">\
 							<th>Type</th>\
 							<th class="status-column">Status</th>\
 							<th style="width:100%;">Title</th>\
+							<th>Version</th>\
 					 </tr>\
 				</thead>\
 				<tbody id="selected-document-list-'+index+'" class="doc-list"></tbody>\
 			</table>'
 			);
 		} else {
-			section.html(
-			'<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
+			section.html('\
+			<table id="selected-document-table-'+index+'" class="selected-document-table" style="z-index: 1; position: relative;">\
 				<thead>\
 					 <tr class="table-header" id="selected-document-table-header-'+index+'">\
 							<th>Type</th>\
 							<th style="width:100%;">Title</th>\
-							<th></th>\
+							<th>Version</th>\
+							<th style="min-width:40px;"></th>\
 					 </tr>\
 				</thead>\
 				<tbody id="selected-document-list-'+index+'" class="doc-list"></tbody>\
@@ -787,15 +798,15 @@ table tr:hover td{
 <script>
 $(document).ready(function(){
 	if (viewMode){
-		addSection('Policies & Training');
-		addItem(1, 'Laws & Regulations');
-		addItem(1, 'Company Policies');
-		addItem(4, 'Policy Training Video');
-		addItem(0, 'Code of Conduct');
-		addItem(1, 'Employee Responsibilities');
-		addItem(3, 'Policy Acknowledgement Questionnaire');
-		addItem(3, 'Employee Survey');
-		addItem(0, 'Helpful Links & Contact Information');
+		addSection('Default');
+		addItem({icon:1, title:'Laws & Regulations', version:2});
+		addItem({icon:1, title:'Company Policies', version:3});
+		addItem({icon:4, title:'Policy Training Video', version:2});
+		addItem({icon:0, title:'Code of Conduct', version:1});
+		addItem({icon:1, title:'Employee Responsibilities', version:1});
+		addItem({icon:3, title:'Policy Acknowledgement Questionnaire', version:1});
+		addItem({icon:3, title:'Employee Survey', version:2});
+		addItem({icon:0, title:'Helpful Links & Contact Information', version:2});
 		$('#view-campaign').show();
 		$('#help-text').text('You are required to read/complete each of the following items.');
 	} else {
